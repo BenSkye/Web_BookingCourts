@@ -10,6 +10,9 @@ import {
   TimePicker,
   Checkbox,
   Progress,
+  Row,
+  Col,
+  Card,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import Cookies from "js-cookie";
@@ -26,6 +29,20 @@ import {
 import { app } from "../../../utils/firebase/firebase";
 import ReviewStep from "./components/ReviewStep";
 import PriceAndTime from "./components/PriceAndTime";
+import {
+  FaCar,
+  FaHome,
+  FaWifi,
+  FaStore,
+  FaRestroom,
+  FaCoffee,
+  FaTools,
+  FaUser,
+  FaFirstAid,
+  FaShower,
+  FaLock,
+} from "react-icons/fa";
+
 const { Step } = Steps;
 
 const storage = getStorage(app);
@@ -275,14 +292,21 @@ const CenterForm = () => {
   };
 
   return (
-    <div>
-      <Steps current={current}>
+    <div style={{ padding: "20px" }}>
+      <Steps current={current} style={{ marginBottom: "20px" }}>
         {steps.map((item) => (
           <Step key={item.title} title={item.title} />
         ))}
       </Steps>
-      <div className="steps-content">{steps[current].content}</div>
-      <div className="steps-action">
+      <div style={{ minHeight: "400px" }} className="steps-content">
+        {steps[current].content}
+      </div>
+      <div className="steps-action" style={{ textAlign: "right" }}>
+        {current > 0 && (
+          <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
+            Trở về
+          </Button>
+        )}
         {current < steps.length - 1 && (
           <Button type="primary" onClick={() => next()}>
             Tiếp theo
@@ -295,11 +319,6 @@ const CenterForm = () => {
             disabled={isSubmitDisabled}
           >
             Xác nhận thông tin và tạo sân
-          </Button>
-        )}
-        {current > 0 && (
-          <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
-            Trở về
           </Button>
         )}
       </div>

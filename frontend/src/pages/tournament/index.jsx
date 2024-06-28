@@ -3,27 +3,20 @@ import CarouselOverview from "./components/CarouselOverview";
 import HistoryTournament from "./components/HistoryTournament";
 import ButtonRouter from "./components/ButtonRouter";
 import TopCenter from "./components/TopCenter";
-export default function tournament() {
+
+export default function Tournament() {
   return (
-    <div>
+    <div style={{ marginBottom: "30px" }}>
       <CarouselOverview />
-      <Row gutter={16}>
+      <div style={{ marginTop: "30px" }}>
+        <HistoryTournament />
+      </div>
+      <Row gutter={16} justify="center">
         <Col span={12}>
-          <HistoryTournament />
-        </Col>
-        <Col
-          span={12}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
           <ButtonRouter />
         </Col>
       </Row>
-      <Row style={{ marginTop: 30 }}>
+      <Row style={{ marginTop: "30px" }}>
         <TopCenter />
       </Row>
     </div>
