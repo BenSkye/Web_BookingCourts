@@ -62,9 +62,9 @@ class timeSlotService implements ITimeSlotService {
     const isoDate = new Date(`${date}T00:00:00.000Z`)
     const courtRepositoryInstance = new courtRepository()
     const listcourtId = await courtRepositoryInstance.getListCourtId({ centerId })
-    if (listcourtId.length === 0) {
-      return null
-    }
+    // if (listcourtId.length === 0) {
+    //   return null
+    // }
     const listMinStartTime = []
     const datePrefix = '1970-01-01T'
     const timeSlotRepositoryInstance = new timeSlotRepository()

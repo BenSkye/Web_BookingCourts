@@ -5,7 +5,7 @@ class momoService {
   static async createPayment(
     orderInfo: string,
     amount: number,
-    orderId: string,
+    orderId: string, //BD 1235441
     centerId: string,
     callbackUrl: string,
     extraData: string,

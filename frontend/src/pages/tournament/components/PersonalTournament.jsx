@@ -5,6 +5,7 @@ import {
   getPersonalTournamentAPI,
 } from "../../../services/tournamentAPI/tournamentAPI";
 import TournamentDetail from "../../TournamentDetail";
+import { Link } from "react-router-dom";
 
 const pageSize = 3;
 
@@ -89,10 +90,9 @@ export default function PersonalTournament() {
                 </span>
               }
               extra={
-                // <Link to={`/tournament/detail/${tournament.id}`}>Chi tiết</Link>
-                <Button type="link" onClick={() => showModal(tournament.id)}>
-                  Chi tiết
-                </Button>
+                <Link to={`/tournament/detail/${tournament.id}`}>
+                  <Button type="link">Chi tiết</Button>
+                </Link>
               }
               bodyStyle={{ padding: "10px" }}
               headStyle={{ backgroundColor: "#f0f0f0", padding: "10px" }}
@@ -115,14 +115,14 @@ export default function PersonalTournament() {
         total={ListTournament.length}
         style={{ display: "flex", justifyContent: "center", marginTop: "5px" }}
       />
-      <Modal
+      {/* <Modal
         title="Chi tiết giải đấu"
         open={isModalOpen}
         footer={null}
         onCancel={handleOk}
       >
         <TournamentDetail tournamentId={tournamentId} />
-      </Modal>
+      </Modal> */}
     </div>
   );
 }

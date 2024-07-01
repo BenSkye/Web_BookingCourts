@@ -3,7 +3,6 @@ import Cookies from "js-cookie";
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 const API_URL = `${apiBaseUrl}/playPackage`;
 
-
 export const getBookingByInvoiceIdAPI = async (invoiceId) => {
   const response = await fetchData(
     `${apiBaseUrl}/booking/get-booking-by-invoiceId/${invoiceId}`
@@ -44,6 +43,20 @@ export const UpdateBookingIncreasePrice = async (data) => {
   }
 };
 
+export const UpdateBookingDecreasePrice = async (data) => {
+  const response = await putData(
+    `${apiBaseUrl}/booking/update-booking-byDay-decrease-price`,
+    data
+  );
+  console.log("Response:", response);
+  if (response.data.status === "fail") {
+    return response.data;
+  }
+  if (response.status === 201) {
+    return response.data;
+  }
+};
+
 export const getPersonalBookingAPI = async () => {
   const response = await fetchData(
     `${apiBaseUrl}/booking/get-personal-booking`
@@ -55,13 +68,14 @@ export const getPersonalBookingAPI = async () => {
   if (response.status === "success") {
     return response.data;
   }
-
-
 };
 
 export const addPlayPackage = async (playPackageData) => {
   try {
-    const response = await postData(`${apiBaseUrl}/playPackage`, playPackageData);
+    const response = await postData(
+      `${apiBaseUrl}/playPackage`,
+      playPackageData
+    );
     return response.data;
   } catch (error) {
     throw error.response.data;
@@ -78,9 +92,7 @@ export const completeBookingAPI = async (bookingId) => {
   if (response.status === "success") {
     return response.data;
   }
-}
-
-
+};
 
 export const cancelBookingAPI = async (bookingId) => {
   const response = await fetchData(

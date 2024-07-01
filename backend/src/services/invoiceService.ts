@@ -8,7 +8,7 @@ interface IinvoiceService {
   addInvoiceBookingbyDay(price: any, userid: string, orderId: string): Promise<any>
 
   addInvoiceUpdateBookingbyDay(price: any, userid: string, orderId: string): Promise<any>
-  paidIvoice(invoiceId: string): Promise<any>
+  paidInvoice(invoiceId: string): Promise<any>
   getInvoicesByUserId(userid: string): Promise<any>
   getListInvoices(query: any): Promise<any>
   getInvoice(query: any): Promise<any | null>
@@ -38,7 +38,7 @@ class InvoiceService implements IinvoiceService {
     }
     return InvoiceRepositoryInstance.addInvoice(newInvoice)
   }
-  async paidIvoice(invoiceID: string) {
+  async paidInvoice(invoiceID: string) {
     const InvoiceRepositoryInstance = new InvoiceRepository()
     return InvoiceRepositoryInstance.updateInvoice({ invoiceID: invoiceID }, { status: 'paid' })
   }

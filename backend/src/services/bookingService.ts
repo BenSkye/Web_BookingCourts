@@ -220,7 +220,7 @@ class bookingService implements IbookingService {
       return { status: 'fail' }
     }
 
-    const invoice = await invoiceServiceInstance.paidIvoice(reqBody.orderId)
+    const invoice = await invoiceServiceInstance.paidInvoice(reqBody.orderId)
     if (!invoice) {
       throw new AppError('Invoice not found', 404)
     }
@@ -456,7 +456,7 @@ class bookingService implements IbookingService {
         console.log('oldBooking', oldBooking)
         bookingRepository.updateBooking({ _id: oldBooking._id }, { status: oldBooking.status })
       }
-      const invoice = await invoiceServiceInstance.paidIvoice(reqBody.orderId)
+      const invoice = await invoiceServiceInstance.paidInvoice(reqBody.orderId)
       if (!invoice) {
         throw new AppError('lỗi cập nhật invoice', 401)
       }
@@ -502,31 +502,6 @@ class bookingService implements IbookingService {
       )
       return { status: 'fail' }
     }
-
-    // const invoiceServiceInstance = new InvoiceService()
-    // if (reqBody.resultCode !== 0) {
-    //   console.log('vao fail')
-    //   const invoice = await invoiceServiceInstance.getInvoicesByInvoiceID(reqBody.orderId)
-    //   const Booking = await bookingRepository.getBooking({ invoiceId: invoice._id })
-    //   await Promise.all(
-    //     listBooking.map(async (booking: any) => {
-    //       await this.changeBookingStatusAfterPayFail(booking._id)
-    //     })
-    //   )
-    //   await invoiceServiceInstance.deleteInvoiceById(invoice._id)
-    //   return { status: 'fail' }
-    // }
-
-    // const invoice = await invoiceServiceInstance.paidIvoice(reqBody.orderId)
-    // if (!invoice) {
-    //   throw new AppError('Invoice not found', 404)
-    // }
-    // const listBooking = await bookingRepository.getListBooking({ invoiceId: invoice._id })
-    // await Promise.all(
-    //   listBooking.map(async (booking: any) => {
-    //     await this.changeBookingStatusAfterPaySuccess(booking._id)
-    //   })
-    // )
   }
 
   async UpdateBookingbyDayDecreasePrice(data: any, userId: string) {
@@ -541,13 +516,66 @@ class bookingService implements IbookingService {
     if (!oldBooking) {
       throw new AppError('Booking not found', 404)
     }
-    const booking = {
-      centerId: updateBooking.centerId,
-      courtId: updateBooking.courtId,
-      date: updateBooking.date,
-      start: updateBooking.start,
-      end: updateBooking.end
+    if (oldBooking) {
+      const slot = {
+        courtId: oldBooking.courtId.toString(),
+        date: oldBooking.date,
+        start: oldBooking.start,
+        end: oldBooking.start
+      }
+      const slotAvailable = []
+      const timeSlotRepositoryInstance = new timeSlotRepository()
+      while (new Date(`1970-01-01T${slot.end}:00`) < new Date(`1970-01-01T${oldBooking.end}:00`)) {
+        const [hour, minute] = slot.start.split(':')
+        if (minute === '00') {
+          slot.end = `${hour}:30`
+        } else {
+          slot.end = `${(parseInt(hour) + 1).toString().padStart(2, '0')}:00`
+        }
+        slotAvailable.push({ ...slot })
+        slot.start = slot.end
+      }
+      await Promise.all(
+        slotAvailable.map(async (slot) => {
+          await timeSlotRepositoryInstance.updateSlotStatus(slot, 'available')
+        })
+      )
+      oldBooking.status = 'disable'
+      console.log('oldBooking', oldBooking)
+      bookingRepository.updateBooking({ _id: oldBooking._id }, { status: oldBooking.status })
     }
+    updateBooking.status = 'confirmed'
+    updateBooking.invoiceId = oldBooking.invoiceId
+    updateBooking._id = new ObjectId()
+    console.log('updateBooking', updateBooking)
+    const newBooking = await bookingRepository.createBooking(updateBooking)
+    if (newBooking) {
+      const slot = {
+        courtId: newBooking.courtId.toString(),
+        date: newBooking.date,
+        start: newBooking.start,
+        end: newBooking.start
+      }
+      const slotAvailable = []
+      const timeSlotRepositoryInstance = new timeSlotRepository()
+      while (new Date(`1970-01-01T${slot.end}:00`) < new Date(`1970-01-01T${newBooking.end}:00`)) {
+        const [hour, minute] = slot.start.split(':')
+        if (minute === '00') {
+          slot.end = `${hour}:30`
+        } else {
+          slot.end = `${(parseInt(hour) + 1).toString().padStart(2, '0')}:00`
+        }
+        slotAvailable.push({ ...slot })
+        slot.start = slot.end
+      }
+      // Cập nhật trạng thái của các slot thành "booked"
+      await Promise.all(
+        slotAvailable.map(async (slot) => {
+          await timeSlotRepositoryInstance.updateSlotStatus(slot, 'booked')
+        })
+      )
+    }
+    return newBooking
   }
 
   async getBookingByInvoiceId(invoiceId: string) {

@@ -16,6 +16,9 @@ const NoAccess = () => {
     if (user.role === "manager") {
       navigate("/courtManage");
     }
+    if (user.role === "admin") {
+      navigate("/admin/Dashboard");
+    }
   };
 
   return (

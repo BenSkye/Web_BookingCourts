@@ -1,10 +1,13 @@
-import { Button, Card, Col, Row } from "antd";
+import { Button, Card, Col, Row, message } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { getPriceFormStartToEnd } from "../../../../services/slotBookingAPI";
 import { formatPrice } from "../../../../utils/priceFormatter";
-import { UpdateBookingIncreasePrice } from "../../../../services/bookingAPI/bookingAPI";
-
+import {
+  UpdateBookingDecreasePrice,
+  UpdateBookingIncreasePrice,
+} from "../../../../services/bookingAPI/bookingAPI";
+import { useNavigate } from "react-router-dom";
 export default function CartBooking({ oldBooking, newBooking }) {
   console.log("oldBooking", oldBooking);
   const [oldPrice, setOldPrice] = useState(0);
@@ -28,6 +31,7 @@ export default function CartBooking({ oldBooking, newBooking }) {
     setUpdatePrice(0);
     setNewBookingCart(null);
   };
+  const navigate = useNavigate();
   const handleUpdateBooking = async () => {
     if (newBookingCart !== null) {
       if (updatePrice > 0) {
@@ -53,6 +57,23 @@ export default function CartBooking({ oldBooking, newBooking }) {
           );
           window.location.href = result.data.paymentResult.payUrl;
         }
+      }
+      if (updatePrice < 0) {
+        const updateBooking = {
+          _id: oldBooking._id,
+          centerId: newBookingCart.centerId,
+          start: newBookingCart.start,
+          end: newBookingCart.end,
+          courtId: newBookingCart._id,
+          price: newBookingCart.price,
+          date: newBookingCart.date,
+          userId: oldBooking.userId,
+        };
+        const data = { oldPrice: oldPrice, updateBooking: updateBooking };
+        console.log("dataToUpdate", data);
+        const result = await UpdateBookingDecreasePrice(data);
+        message.success("Đã cập nhật đặt sân thành công");
+        navigate("/user/booking-court");
       }
     }
     // không hoàn tiền

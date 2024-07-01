@@ -25,6 +25,7 @@ const STATUS_MAPPING = {
   confirmed: { color: "green", text: "Đã thanh toán" },
   cancelled: { color: "red", text: "Đã hủy" },
   expired: { color: "#A9A9A9", text: "Hết hạn" },
+  disable: { color: "#A9A9A9", text: "Đã được đổi" },
 };
 const OrderDetails = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);

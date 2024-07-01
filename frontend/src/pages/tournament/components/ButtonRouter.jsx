@@ -27,18 +27,25 @@ export default function ButtonRouter() {
         flexDirection: "column",
       }}
     >
-      <Button
+      <Link
+        to="/tournament/personal"
         style={{
           flex: 1,
           marginBottom: "10px",
-          background:
-            "linear-gradient(90deg, rgba(252,148,69,1) 0%, rgba(131,58,180,1) 100%)",
-          color: "black",
         }}
-        onClick={() => showModal()}
       >
-        Xem các Giải đấu mà bạn đã tạo
-      </Button>
+        <Button
+          style={{
+            height: "100%",
+            width: "100%",
+            background:
+              "linear-gradient(90deg, rgba(252,148,69,1) 0%, rgba(131,58,180,1) 100%)",
+            color: "black",
+          }}
+        >
+          Xem các Giải đấu mà bạn đã tạo
+        </Button>
+      </Link>
       <Link
         to="/tournament/create"
         style={{
@@ -58,14 +65,14 @@ export default function ButtonRouter() {
         </Button>
       </Link>
 
-      <Modal
+      {/* <Modal
         title="Giải đấu bạn đã tạo"
         open={isModalOpen}
         footer={null}
         onCancel={handleOk}
       >
         <PersonalTournament />
-      </Modal>
+      </Modal> */}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import AppError from '~/utils/appError'
 
-const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+const errorController = (err: any, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({
       status: err.status,
@@ -19,4 +19,4 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
   })
 }
 
-export default errorHandler
+export default errorController

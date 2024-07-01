@@ -21,8 +21,7 @@ class courtRepository implements ICourtRepository {
     return await Court.find(query).select('_id')
   }
   static async getAllCourt() {
-    return await Court.find().exec();
+    return await Court.find().exec()
   }
-
 }
 export default courtRepository

@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import AccountSettingsForm from "../accountInformation/index";
 import UpdatePassword from "../updatePassword/index";
@@ -15,6 +15,7 @@ import {
   FileTextOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
+import AuthContext from "../../../services/authAPI/authProvideAPI";
 // import AuthContext from "../../../services/authAPI/authProvideAPI";
 
 const { Sider, Content } = Layout;
@@ -23,7 +24,7 @@ const ProfileAccount = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState("1");
   const [isCustomer, setIsCustomer] = useState(false); // State để xác định vai trò của người dùng
-  // const { user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -34,7 +35,9 @@ const ProfileAccount = () => {
     const userRole = "admin, manager"; // Change this to 'customer', 'admin', 'manager' based on your logic
 
     // Set isCustomer based on userRole
-    setIsCustomer(userRole === "customer");
+    if (user.role === "customer") {
+      setIsCustomer(true);
+    }
 
     // Determine the selected key based on the current pathname
     setSelectedKey(getSelectedKey(location.pathname));
@@ -121,8 +124,8 @@ const ProfileAccount = () => {
           <div style={{ width: "100%", maxWidth: "800px" }}>
             {selectedKey === "1" && <AccountSettingsForm />}
             {selectedKey === "2" && <UpdatePassword />}
-            {selectedKey === "3" && isCustomer && <BookingCourt />}
-            {selectedKey === "4" && isCustomer && <h1>Số giờ chơi</h1>}
+            {selectedKey === "3" && <BookingCourt />}
+            {selectedKey === "4" && <h1>Số giờ chơi</h1>}
             {selectedKey === "5" && <OrderDetails />}
           </div>
         </Content>

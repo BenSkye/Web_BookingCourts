@@ -6,7 +6,7 @@ import bodyParser from 'body-parser'
 import morgan from 'morgan'
 import compression from 'compression'
 import AppError from './utils/appError'
-import errorHandler from './controller/errorController'
+import errorController from './controller/errorController'
 import authRoute from './routes/authRoute'
 import centerRoute from './routes/centerRoute'
 import centerPackageRoute from './routes/centerPackageRoute'
@@ -22,6 +22,7 @@ import userRoute from './routes/userRoute'
 import fixedPackageScheduleRoute from './routes/fixedPackageScheduleRoute'
 import timeSlotService from './services/timeslotService'
 import bookingService from './services/bookingService'
+import tournamenRoute from './routes/tournamentRoute'
 
 dotenv.config()
 
@@ -42,6 +43,7 @@ app.use('/api/v1/invoice', invoiceRoute)
 app.use('/api/v1/user', userRoute)
 app.use('/api/v1/court', courtRoute)
 app.use('/api/v1/playPackage', playPackageRoute)
+app.use('/api/v1/tournament', tournamenRoute)
 app.use('/api/v1/fixed-package-schedule', fixedPackageScheduleRoute)
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404))
@@ -55,5 +57,5 @@ cron.schedule('0,30 * * * *', async () => {
   await bookingServiceInstance.checkAndUpdateBooking() // câp nhật hết hạn cho những booking chưa checkin  sau 30 phút
 })
 
-app.use(errorHandler)
+app.use(errorController)
 export default app

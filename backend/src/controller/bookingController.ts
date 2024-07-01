@@ -62,11 +62,11 @@ class bookingController {
   static UpdateBookingbyDayDecreasePrice = catchAsync(async (req: any, res: any, next: any) => {
     const bookingServiceInstance = new bookingService()
     const userId = req.user._id
-    const result = await bookingServiceInstance.UpdateBookingbyDayDecreasePrice(req.body, userId)
+    const newBooking = await bookingServiceInstance.UpdateBookingbyDayDecreasePrice(req.body, userId)
     res.status(201).json({
       status: 'success',
       data: {
-        result
+        newBooking
       }
     })
   })

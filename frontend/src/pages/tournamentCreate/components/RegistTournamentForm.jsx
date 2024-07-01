@@ -1,4 +1,4 @@
-import { Button, DatePicker, Form, Input, Modal } from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, Modal } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
 import { useState } from "react";
@@ -6,12 +6,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { createTournamentAPI } from "../../../services/tournamentAPI/tournamentAPI";
 
 export default function RegistTournamentForm() {
-  const centerID = useParams().centerID;
+  const centerId = useParams().centerID;
   const [newTournament, setNewTournament] = useState({});
   const onFinish = (values) => {
     values.startDate = dayjs(values.startDate).format("YYYY-MM-DD");
     values.endDate = dayjs(values.endDate).format("YYYY-MM-DD");
-    values = { ...values, centerID: centerID };
+    values = { ...values, centerId: centerId };
+    console.log("Received values from form: ", values);
     setNewTournament(values);
     showModal();
   };
@@ -28,7 +29,7 @@ export default function RegistTournamentForm() {
     const data = await createTournamentAPI(newTournament);
     console.log("Received values from form: ", { data });
     setIsModalOpen(false);
-    navigate("/tournament");
+    navigate(`/tournament/detail/${data._id}`);
   };
 
   const handleCancel = () => {
@@ -126,7 +127,7 @@ export default function RegistTournamentForm() {
             },
           ]}
         >
-          <Input />
+          <InputNumber />
         </Form.Item>
 
         <p>Số lượng trận đấu dự kiến</p>
@@ -143,7 +144,7 @@ export default function RegistTournamentForm() {
             },
           ]}
         >
-          <Input />
+          <InputNumber />
         </Form.Item>
 
         <p>Cơ cấu giải thưởng</p>

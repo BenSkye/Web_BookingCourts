@@ -1,5 +1,6 @@
 import { fetchData } from "@/services/fetchAPI";
 import { postData } from "../fetchAPI";
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export const getAllTournamentAPI = async () => {
   const data = await fetchData(
@@ -43,18 +44,26 @@ export const getPersonalTournamentAPI = async () => {
 };
 
 export const getTournamentAPI = async (id) => {
-  const data = await fetchData(
-    `https://664e992dfafad45dfae087c5.mockapi.io/Tournament/${id}`
-  );
-  console.log("data", data);
-  return data;
+  const response = await fetchData(`${apiBaseUrl}/tournament/${id}`);
+  console.log("Response:", response);
+  if (response.status === "fail") {
+    return response.data;
+  }
+  if (response.status === "success") {
+    return response.data;
+  }
 };
 
-export const createTournamentAPI = async (tournament) => {
-  // const data = await postData(
-  //   "https://664e992dfafad45dfae087c5.mockapi.io/Tournament",
-  //   tournament
-  // );
-  const data = tournament;
-  return data;
+export const createTournamentAPI = async (data) => {
+  const response = await postData(
+    `${apiBaseUrl}/tournament/create-tournament`,
+    data
+  );
+  console.log("Response:", response);
+  if (response.data.status === "fail") {
+    return response.data;
+  }
+  if (response.status === 201) {
+    return response.data;
+  }
 };

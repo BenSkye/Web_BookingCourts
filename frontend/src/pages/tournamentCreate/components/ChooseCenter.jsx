@@ -1,25 +1,40 @@
-import { useEffect, useState } from 'react';
-import { getListCourtsByCenterId_API } from '@/services/courtAPI/getCourtsAPI';
-import ListCenter from './ListCenter';
+import { useEffect, useState } from "react";
+import { getAllCenterAPI } from "@/services/centersAPI/getCenters";
+import ListCenter from "./ListCenter";
 export default function ChooseCenter() {
-  const [courts, setCourts] = useState([]);
+  const [center, setCenters] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getCourts = async () => {
-      setLoading(true);
-      const data = await getListCourtsByCenterId_API();
-      setCourts(data);
-      setLoading(false);
+    const getCenters = async () => {
+      try {
+        setLoading(true);
+        let data = await getAllCenterAPI();
+        data = data.map((center) => ({
+          ...center,
+          pricePerHour: center.price.find(
+            (price) => price.scheduleType === "NP"
+          )?.price,
+        }));
+        // Filter centers with status 'active'
+        console.log("datas", data);
+
+        data = data.filter((center) => center.status === "active");
+        setCenters(data);
+        console.log("datas", data);
+      } catch (error) {
+        console.error("Failed to fetch centers:", error);
+      } finally {
+        setLoading(false);
+      }
     };
-    getCourts();
+    getCenters();
   }, []);
+
   return (
     <div>
-      <h1 style={{ marginBottom: 20 }}>
-        Danh sách trung tâm cầu lông hỗ trợ tổ chức giải
-      </h1>
-      <ListCenter listCenter={courts} loading={loading} />
+      <h1 style={{ marginBottom: 20 }}>Danh sách trung tâm cầu lông</h1>
+      <ListCenter listCenter={center} loading={loading} />
     </div>
   );
 }
